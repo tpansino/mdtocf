@@ -1,11 +1,7 @@
 ---
-
-
-title :Example Page
-
+title: Example Page
 chapter: true
 kind: index
-
 ---
 
 # h1 Heading
@@ -15,7 +11,6 @@ kind: index
 ##### h5 Heading
 ###### h6 Heading
 
-
 ## Horizontal Rules
 
 ___
@@ -23,7 +18,6 @@ ___
 ---
 
 ***
-
 
 ## Typographic replacements
 
@@ -37,7 +31,6 @@ test.. test... test..... test?..... test!....
 
 "Smartypants, double quotes" and 'single quotes'
 
-
 ## Emphasis
 
 **This is bold text**
@@ -50,14 +43,11 @@ _This is italic text_
 
 ~~Strikethrough~~
 
-
 ## Blockquotes
-
 
 > Blockquotes can also be nested...
 >> ...by using additional greater-than signs right next to each other...
 > > > ...or with spaces between arrows.
-
 
 ## Lists
 
@@ -77,7 +67,6 @@ Ordered
 2. Consectetur adipiscing elit
 3. Integer molestie lorem at massa
 
-
 1. You can use sequential numbers...
 1. ...or keep all the numbers as `1.`
 
@@ -85,7 +74,6 @@ Start numbering with offset:
 
 57. foo
 1. bar
-
 
 ## Code
 
@@ -97,7 +85,6 @@ Indented code
     line 1 of code
     line 2 of code
     line 3 of code
-
 
 Block code "fences"
 
@@ -113,6 +100,16 @@ var foo = function (bar) {
 };
 
 console.log(foo(5));
+```
+
+Mermaid Diagram
+
+``` mermaid
+graph TD;
+  A-->B;
+  A-->C;
+  B-->D;
+  C-->D;
 ```
 
 ## Tables
@@ -153,5 +150,3 @@ Like links, Images also have a footnote style syntax
 With a reference later in the document defining the URL location:
 
 [id]: https://octodex.github.com/images/dojocat.jpg  "The Dojocat"
-
-
