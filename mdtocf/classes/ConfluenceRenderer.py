@@ -7,6 +7,8 @@ mistune v2 and convert it to Confluence XHTML Storage Format.
 
 import mistune
 
+from urllib.parse import urlparse
+
 
 class ConfluenceRenderer(mistune.HTMLRenderer):
 
@@ -24,25 +26,30 @@ class ConfluenceRenderer(mistune.HTMLRenderer):
             return '<ac:image><ri:url ri:value="' + src + '" /></ac:image>'
 
     def link(self, link, text=None, title=None):
-        if link.find('/') == -1:
-            return \
-                '\n<ac:link><ri:attachment ri:filename="' + link + '" />' \
-                + '<ac:plain-text-link-body>' \
-                + '<![CDATA[' \
-                + (text if text is not None else \
-                  'Link to a Confluence Attachment') \
-                + ']]>' \
-                + '</ac:plain-text-link-body>' \
-                + '</ac:link>\n'
-        else:
+        is_external = bool(urlparse(link).netloc)
+        if is_external:
             return '<a href="' + link + '" alt="' \
                 + (title if title is not None else '') + '">' \
                 + (text if text is not None else link) + '</a>'
+        else:
+            if link.lower().endswith('.md'):
+                # Reference to Another Markdown Page
+                pass
+            else:
+                # Attachment
+                return \
+                    '\n<ac:link><ri:attachment ri:filename="' + link + '" />' \
+                    + '<ac:plain-text-link-body>' \
+                    + '<![CDATA[' \
+                    + (text if text is not None else 'Attachment') \
+                    + ']]>' \
+                    + '</ac:plain-text-link-body>' \
+                    + '</ac:link>\n'
 
     def block_code(self, code, info=None):
         return \
             '\n<ac:structured-macro ac:name="code">' \
-            + '<ac:parameter ac:name="title">Snippet</ac:parameter>' \
+            + '<ac:parameter ac:name="title"></ac:parameter>' \
             + '<ac:parameter ac:name="theme">Emacs</ac:parameter>' \
             + '<ac:parameter ac:name="linenumbers">true</ac:parameter>' \
             + '<ac:parameter ac:name="language">' \
