@@ -137,6 +137,10 @@ Right aligned columns
 
 Autoconverted link https://github.com/nodeca/pica (enable linkify to see)
 
+[ref to aa]({{< ref "/A/B/aa.md" >}})
+
+[relref to aa]({{< relref "./A/B/aa.md" >}})
+
 
 ## Images
 
