@@ -66,9 +66,9 @@ class ConfluenceRenderer(mistune.HTMLRenderer):
             payload = json.dumps({
                 'code': code,
                 'mermaid': '{"theme":"default"}'
-            })
+            }).encode('utf-8')
             src = 'https://mermaid.ink/img/{}'.format(
-                base64.b64encode(payload.encode('utf-8')).decode('ascii'))
+                base64.b64encode(payload).decode('ascii'))
 
             # External Image
             return '\n<ac:image><ri:url ri:value="' \
