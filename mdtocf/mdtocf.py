@@ -10,11 +10,14 @@ from mdtocf.classes.ConfluencePublisher import ConfluencePublisher
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--confluenceUsername',
-                        required=True, help='e.g. "example@example.com"')
+                        required=True,
+                        help='e.g. "example@example.com"')
     parser.add_argument('--confluenceApiToken',
-                        required=True, help='e.g. "a87D98AfDsf98dsf7AdsNfaa2"')
+                        required=True,
+                        help='e.g. "a87D98AfDsf98dsf7AdsNfaa2"')
     parser.add_argument('--confluenceUrl',
-                        required=True, help='e.g. "https://example.jira.com/"')
+                        required=True,
+                        help='e.g. "https://example.jira.com/"')
     parser.add_argument('--confluenceSpace',
                         required=True,
                         help='e.g. ~989819389 (Personal Space), 78712486')
@@ -22,22 +25,33 @@ def main():
                         required=True,
                         help='e.g. "Page Information: ?pageId=1650458860')
     parser.add_argument('--confluencePageTitlePrefix',
-                        required=True, help='e.g. "[MyPrefix] "')
+                        required=False,
+                        help='e.g. "[MyPrefix] "',
+                        default='')
     parser.add_argument('--markdownDir',
-                        required=True, help='e.g. "../mydocs"')
+                        required=True,
+                        help='e.g. "../mydocs"')
     parser.add_argument('--dbPath',
-                        required=True, help='e.g. "./dbs/mydocs.db"')
+                        required=False,
+                        help='e.g. "./dbs/mydocs.db"',
+                        default='./meta.db')
     parser.add_argument('--forceUpdate',
-                        required=False, default=0,
-                        help='1|0, default=0 (No).' +
+                        required=False,
+                        default=False,
+                        action="store_true",
+                        help='default=False.' +
                         ' Force page update in Confluence')
     parser.add_argument('--forceDelete',
-                        required=False, default=0,
-                        help='1|0, default=0 (No). Force page removal' +
+                        required=False,
+                        default=False,
+                        action="store_true",
+                        help='default=False. Force page removal' +
                         ' (before update) in Confluence.')
     parser.add_argument('--skipUpdate',
-                        required=False, default=0,
-                        help='1|0, default=0 (No). Skip page update' +
+                        required=False,
+                        default=False,
+                        action="store_true",
+                        help='default=False. Skip page update' +
                         ' in Confluence')
     args = parser.parse_args()
 
