@@ -9,7 +9,7 @@ import os
 
 from mistune.directives import Admonition, DirectiveInclude
 from .LinkRefPlugin import LinkRefPlugin
-from .MetadataPlugin import MetadataPlugin
+from .FrontMatterPlugin import plugin_front_matter
 from .ConfluenceRenderer import ConfluenceRenderer
 from .KeyValue import KeyValue
 from atlassian import Confluence
@@ -38,10 +38,9 @@ def getFileSha256(filepath):
 class ConfluencePublisher():
 
     def __init__(
-        self, url, username, apiToken,
-        pageTitlePrefix, markdownDir, dbPath, space, parentPageId,
-        forceUpdate=False, forceDelete=False, skipUpdate=False,
-    ):
+            self, url, username, apiToken,
+            pageTitlePrefix, markdownDir, dbPath, space, parentPageId,
+            forceUpdate=False, forceDelete=False, skipUpdate=False):
         self.api = Confluence(url=url, username=username, password=apiToken)
         self.pageTitlePrefix = pageTitlePrefix
         self.markdownDir = markdownDir
@@ -52,8 +51,6 @@ class ConfluencePublisher():
         self.forceDelete = forceDelete
         self.skipUpdate = skipUpdate
         self.confluenceRenderer = ConfluenceRenderer()
-        self.linkrefPlugin = LinkRefPlugin(markdownDir)
-        self.metadataPlugin = MetadataPlugin()
         self.renderer = mistune.create_markdown(
             renderer=self.confluenceRenderer,
             plugins=[
@@ -63,12 +60,9 @@ class ConfluencePublisher():
                 'url',
                 Admonition(),
                 DirectiveInclude(),
-                self.linkrefPlugin,
-                self.metadataPlugin]
+                LinkRefPlugin(markdownDir),
+                plugin_front_matter]
         )
-
-        # Hack to allow metadata plugin to work (See mistune/block_parser.py)
-        self.renderer.block.rules.remove('thematic_break')
 
     def __updatePage(self, space, parentId, filepath, autoindex=False):
 
@@ -79,23 +73,19 @@ class ConfluencePublisher():
         hash = getFileSha256(filepath)
 
         # --- Render (BEGIN)
-        self.metadataPlugin.stack['title'] = None
+
+        state = {'front_matter': {}}
 
         if autoindex:
             body = self.confluenceRenderer.generate_autoindex()
+            state['front_matter']['title'] = 'Folder ' + \
+                os.path.basename(os.path.dirname(filepath))
         else:
-            body = self.renderer.read(filepath)
+            body = self.renderer.read(filepath, state)
 
-        if self.metadataPlugin.stack['title'] is None:
-            if autoindex:
-                title = 'Folder ' + os.path.basename(os.path.dirname(filepath))
-            else:
-                title = os.path.basename(filepath)
-        else:
-            title = self.metadataPlugin.stack['title']
+        title = '{}{}'.format(self.pageTitlePrefix,
+                              state['front_matter']['title'])
 
-        title = self.pageTitlePrefix + title
-        # >>> Removed: + " [" + self.kv.sha256(filepath)[-6:] + "]"
         # --- Render (END)
 
         if currentTitle and currentTitle != title:
