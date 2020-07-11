@@ -11,3 +11,5 @@ dbs
 build
 dist
 *.egg-info
+# vscode launch config
+launch.json
