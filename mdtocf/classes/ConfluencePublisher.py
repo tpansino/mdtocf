@@ -5,6 +5,8 @@ Encapsulate the logic of processing a markdown directory tree.
 """
 import os
 import mistune
+
+from mistune.directives import Admonition, DirectiveInclude
 from .MetadataPlugin import MetadataPlugin
 from .ConfluenceRenderer import ConfluenceRenderer
 from .KeyValue import KeyValue
@@ -33,17 +35,22 @@ class ConfluencePublisher():
         self.metadataPlugin = MetadataPlugin()
         self.renderer = mistune.create_markdown(
             renderer=self.confluenceRenderer,
-            plugins=['strikethrough', 'footnotes', 'table', 'url',
-                     self.metadataPlugin.plugin_metadata]
+            plugins=[
+                'strikethrough',
+                'footnotes',
+                'table',
+                'url',
+                Admonition(),
+                DirectiveInclude(),
+                self.metadataPlugin]
         )
 
         # Hack to allow metadata plugin to work (See mistune/block_parser.py)
         self.renderer.block.rules.remove('thematic_break')
 
     def __getFileContent(self, filepath):
-        file = open(filepath, mode='r')
-        content = file.read()
-        file.close()
+        with open(filepath, 'r') as file:
+            content = file.read()
         return content
 
     def __updatePage(self, space, parentId, filepath, autoindex=False):
@@ -65,7 +72,7 @@ class ConfluencePublisher():
         if autoindex:
             body = self.confluenceRenderer.generate_autoindex()
         else:
-            body = self.renderer(markdown)
+            body = self.renderer.read(filepath)
 
         if self.metadataPlugin.stack['title'] is None:
             if autoindex:
@@ -111,7 +118,7 @@ class ConfluencePublisher():
         filename = os.path.basename(filepath)
         if metadata['id']:
             try:
-                print('DEL Att. => Title: ' + filename)        
+                print('DEL Att. => Title: ' + filename)
                 # https://confluence.atlassian.com/confkb/confluence-rest-api-lacks-delete-method-for-attachments-715361922.html
                 # self.api.delete_attachment_by_id(metadata['id'], 1)
                 self.api.remove_content(metadata['id'])

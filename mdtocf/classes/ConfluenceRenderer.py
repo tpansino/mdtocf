@@ -89,5 +89,30 @@ class ConfluenceRenderer(mistune.HTMLRenderer):
                 + ']]></ac:plain-text-body>' \
                 + '</ac:structured-macro>\n'
 
+    def admonition(self, text, name, title=None):
+        SUPPORTED_NAMES = {
+            "attention": "note",
+            "caution": "warning",
+            "danger": "warning",
+            "error": "warning",
+            "hint": "tip",
+            "important": "info",
+            "note": "note",
+            "tip": "tip",
+            "warning": "warning",
+        }
+
+        return \
+            '<ac:structured-macro ac:name="' + SUPPORTED_NAMES[name] + '">' \
+            + '<ac:parameter ac:name="icon">true</ac:parameter>' \
+            + '<ac:parameter ac:name="title">' \
+            + (title.strip() if title is not None and len(title)
+                else name.title()) \
+            + '</ac:parameter>' \
+            + '<ac:rich-text-body>' \
+            + '<p>' + text.strip() + '</p>' \
+            + '</ac:rich-text-body>' \
+            + '</ac:structured-macro>'
+
     def generate_autoindex(self):
         return '<ac:structured-macro ac:name="children" />'

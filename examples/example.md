@@ -142,6 +142,17 @@ Autoconverted link https://github.com/nodeca/pica (enable linkify to see)
 [relref to aa]({{< relref "./A/B/aa.md" >}})
 
 
+## Admonitions
+
+.. tip::Title Text
+
+   Don't forget to use really cool tips in your *markdown*!
+
+.. warning::
+
+   This is a **warning!**
+
+
 ## Images
 
 ![Minion](https://octodex.github.com/images/minion.png)
