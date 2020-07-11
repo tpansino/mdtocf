@@ -18,10 +18,6 @@ REF_REGEX = re.compile(
 
 class ConfluenceRenderer(mistune.HTMLRenderer):
 
-    def __init__(self, confluenceUrl=None):
-        self.confluenceUrl = confluenceUrl
-        super().__init__(self)
-
     def image(self, src, alt="", title=None):
         is_external = bool(urlparse(src).netloc)
         if is_external:

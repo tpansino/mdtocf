@@ -7,6 +7,7 @@ import os
 import mistune
 
 from mistune.directives import Admonition, DirectiveInclude
+from .LinkRefPlugin import LinkRefPlugin
 from .MetadataPlugin import MetadataPlugin
 from .ConfluenceRenderer import ConfluenceRenderer
 from .KeyValue import KeyValue
@@ -31,7 +32,8 @@ class ConfluencePublisher():
         self.forceUpdate = forceUpdate
         self.forceDelete = forceDelete
         self.skipUpdate = skipUpdate
-        self.confluenceRenderer = ConfluenceRenderer(url)
+        self.confluenceRenderer = ConfluenceRenderer()
+        self.linkrefPlugin = LinkRefPlugin(markdownDir)
         self.metadataPlugin = MetadataPlugin()
         self.renderer = mistune.create_markdown(
             renderer=self.confluenceRenderer,
@@ -42,6 +44,7 @@ class ConfluencePublisher():
                 'url',
                 Admonition(),
                 DirectiveInclude(),
+                self.linkrefPlugin,
                 self.metadataPlugin]
         )
 
