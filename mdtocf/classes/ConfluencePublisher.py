@@ -3,8 +3,9 @@
 Encapsulate the logic of processing a markdown directory tree.
 
 """
-import os
+import hashlib
 import mistune
+import os
 
 from mistune.directives import Admonition, DirectiveInclude
 from .LinkRefPlugin import LinkRefPlugin
@@ -14,6 +15,24 @@ from .KeyValue import KeyValue
 from atlassian import Confluence
 from atlassian.confluence import ApiError
 from requests import HTTPError
+
+
+def sha256(value):
+    h = hashlib.sha256(value.encode())
+    return h.hexdigest()
+
+
+def getFileContent(filepath):
+    try:
+        with open(filepath, 'r') as file:
+            content = file.read()
+    except FileNotFoundError:
+        content = ''
+    return content
+
+
+def getFileSha256(filepath):
+    return sha256(getFileContent(filepath))
 
 
 class ConfluencePublisher():
@@ -51,23 +70,13 @@ class ConfluencePublisher():
         # Hack to allow metadata plugin to work (See mistune/block_parser.py)
         self.renderer.block.rules.remove('thematic_break')
 
-    def __getFileContent(self, filepath):
-        with open(filepath, 'r') as file:
-            content = file.read()
-        return content
-
     def __updatePage(self, space, parentId, filepath, autoindex=False):
-
-        if autoindex:
-            markdown = ''
-        else:
-            markdown = self.__getFileContent(filepath)
 
         metadata = self.kv.load(filepath)
 
         currentTitle = metadata['title']
         currentHash = metadata['sha256']
-        hash = self.kv.sha256(markdown)
+        hash = getFileSha256(filepath)
 
         # --- Render (BEGIN)
         self.metadataPlugin.stack['title'] = None

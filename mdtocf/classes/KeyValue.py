@@ -6,7 +6,6 @@ and XHTML Confluence Content SHA256.
 
 """
 import json
-import hashlib
 import pickledb
 
 
@@ -32,7 +31,3 @@ class KeyValue():
     def remove(self, key):
         self.db.rem(key)
         self.db.dump()
-
-    def sha256(self, value):
-        h = hashlib.sha256(value.encode())
-        return h.hexdigest()

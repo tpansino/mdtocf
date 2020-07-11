@@ -35,6 +35,7 @@ class MetadataPlugin():
     def __call__(self, md):
         md.block.register_rule(
             'metadata', self.METADATA_PATTERN, self.parse_metadata)
+
         md.block.rules.append('metadata')
         if md.renderer.NAME == 'html':
             md.renderer.register(

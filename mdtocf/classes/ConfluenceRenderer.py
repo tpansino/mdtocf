@@ -17,7 +17,6 @@ REF_REGEX = re.compile(
 
 
 class ConfluenceRenderer(mistune.HTMLRenderer):
-
     def image(self, src, alt="", title=None):
         is_external = bool(urlparse(src).netloc)
         if is_external:
