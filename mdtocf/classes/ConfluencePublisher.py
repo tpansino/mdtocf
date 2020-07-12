@@ -8,7 +8,7 @@ import mistune
 import os
 
 from mistune.directives import Admonition, DirectiveInclude
-from .LinkRefPlugin import LinkRefPlugin
+from .RefLinkPlugin import RefLinkPlugin
 from .FrontMatterPlugin import plugin_front_matter
 from .ConfluenceRenderer import ConfluenceRenderer
 from .KeyValue import KeyValue
@@ -60,7 +60,7 @@ class ConfluencePublisher():
                 'url',
                 Admonition(),
                 DirectiveInclude(),
-                LinkRefPlugin(markdownDir),
+                RefLinkPlugin(markdownDir),
                 plugin_front_matter]
         )
 

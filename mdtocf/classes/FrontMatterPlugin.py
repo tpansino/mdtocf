@@ -40,7 +40,7 @@ def parse_front_matter(md, s, state):
         front_matter = m.groupdict()['front_matter']
 
         try:
-            front_matter = yaml.load(front_matter)
+            front_matter = yaml.load(front_matter, Loader=yaml.SafeLoader)
         except yaml.YAMLError as e:
             raise FrontMatterParsingError(e)
 
