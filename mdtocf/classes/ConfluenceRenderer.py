@@ -30,6 +30,12 @@ class ConfluenceRenderer(mistune.HTMLRenderer):
                 + src + '" />' \
                 + '</ac:image>'
 
+    def hugo_ref_link(self, link, text=None):
+        return \
+            '<a href="' + link + '">' \
+            + (text if text is not None else link) \
+            + '</a>'
+
     def link(self, link, text=None, title=None):
         is_external = bool(urlparse(link).netloc)
         if is_external:
@@ -37,23 +43,15 @@ class ConfluenceRenderer(mistune.HTMLRenderer):
                 + (title if title is not None else '') + '">' \
                 + (text if text is not None else link) + '</a>'
         else:
-            m = REF_REGEX.match(link)
-            if m:
-                # Reference to Another Markdown Page (hugo shortcode syntax)
-                return '[{text}]({link} "{title}")'.format(
-                    text=text,
-                    link=link,
-                    title=title)
-            else:
-                # Attachment
-                return \
-                    '<ac:link><ri:attachment ri:filename="' + link + '" />' \
-                    + '<ac:plain-text-link-body>' \
-                    + '<![CDATA[' \
-                    + (text if text is not None else 'Attachment') \
-                    + ']]>' \
-                    + '</ac:plain-text-link-body>' \
-                    + '</ac:link>'
+            # Attachment
+            return \
+                '<ac:link><ri:attachment ri:filename="' + link + '" />' \
+                + '<ac:plain-text-link-body>' \
+                + '<![CDATA[' \
+                + (text if text is not None else 'Attachment') \
+                + ']]>' \
+                + '</ac:plain-text-link-body>' \
+                + '</ac:link>'
 
     def block_code(self, code, info=None):
         if info and 'mermaid' in info:

@@ -8,7 +8,7 @@ import mistune
 import os
 
 from mistune.directives import Admonition, DirectiveInclude
-from .RefLinkPlugin import RefLinkPlugin
+from .HugoRefLinkPlugin import HugoRefLinkPlugin
 from .FrontMatterPlugin import plugin_front_matter
 from .ConfluenceRenderer import ConfluenceRenderer
 from .KeyValue import KeyValue
@@ -54,14 +54,15 @@ class ConfluencePublisher():
         self.renderer = mistune.create_markdown(
             renderer=self.confluenceRenderer,
             plugins=[
+                plugin_front_matter,
+                DirectiveInclude(),
+                HugoRefLinkPlugin(markdownDir),
                 'strikethrough',
                 'footnotes',
                 'table',
                 'url',
                 Admonition(),
-                DirectiveInclude(),
-                RefLinkPlugin(markdownDir),
-                plugin_front_matter]
+            ]
         )
 
     def __updatePage(self, space, parentId, filepath, autoindex=False):

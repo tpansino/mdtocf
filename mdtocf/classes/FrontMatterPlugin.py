@@ -10,7 +10,7 @@ import yaml
 FRONT_MATTER_PATTERN = re.compile((
     r'(?:---\n)'
     r'(?P<front_matter>[\s\S]+?)'
-    r'(?:\n---)'
+    r'(?:\n---\n)'
 ), flags=re.I)
 
 FRONT_MATTER_REQUIRED_FIELDS = [
