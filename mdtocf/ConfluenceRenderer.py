@@ -30,11 +30,16 @@ class ConfluenceRenderer(mistune.HTMLRenderer):
                 + src + '" />' \
                 + '</ac:image>'
 
-    def hugo_ref_link(self, link, text=None):
+    def hugo_ref_link(self, title, text=None):
         return \
-            '<a href="' + link + '">' \
-            + (text if text is not None else link) \
-            + '</a>'
+            '<ac:link>' \
+            + '<ri:page ri:content-title="{}" />'.format(title) \
+            + '<ac:plain-text-link-body>' \
+            + '<![CDATA[' \
+            + '{}'.format(text if text is not None else title) \
+            + ']]>' \
+            + '</ac:plain-text-link-body>' \
+            + '</ac:link>'
 
     def link(self, link, text=None, title=None):
         is_external = bool(urlparse(link).netloc)

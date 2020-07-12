@@ -15,20 +15,12 @@ from .KeyValue import KeyValue
 from atlassian import Confluence
 from atlassian.confluence import ApiError
 from requests import HTTPError
+from .utilities import getFileContent
 
 
 def sha256(value):
     h = hashlib.sha256(value.encode())
     return h.hexdigest()
-
-
-def getFileContent(filepath):
-    try:
-        with open(filepath, 'r') as file:
-            content = file.read()
-    except FileNotFoundError:
-        content = ''
-    return content
 
 
 def getFileSha256(filepath):
