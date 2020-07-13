@@ -59,6 +59,8 @@ def main():
     forceDelete = int(args.forceDelete) == 1
     skipUpdate = int(args.skipUpdate) == 1
 
+    print(args.confluenceUsername)
+
     confluencePublisher = ConfluencePublisher(
         url=args.confluenceUrl,
         username=args.confluenceUsername,

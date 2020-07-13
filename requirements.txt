@@ -2,8 +2,7 @@
 # https://pip.pypa.io/en/latest/reference/pip_install/#requirements-file-format
 # https://packaging.python.org/discussions/install-requires-vs-requirements/
 
-# atlassian-python-api==1.15.9
-git+https://github.com/atlassian-api/atlassian-python-api.git@5b860b444283cd3fb7eddc5659996db9a5165a89
+atlassian-python-api==1.16.0
 
 Pygments==2.6.1
 mistune==2.0.0a4
