@@ -1,0 +1,21 @@
+on: [push]
+
+jobs:
+  exmaple_push:
+    runs-on: ubuntu-18.04
+    name: Upload Example Data to Confluence
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ # uses the action in the root directory
+        name: Markdown to Confluence
+        id: mdtocf
+        env:
+          CONFLUENCE_USERNAME: ${{ secrets.CONFLUENCE_USERNAME }}
+          CONFLUENCE_API_TOKEN: ${{ secrets.CONFLUENCE_API_TOKEN }}
+        with:
+          confluence-username: "$CONFLUENCE_USERNAME"
+          confluence-api-token: "$CONFLUENCE_API_TOKEN"
+          confluence-url: "https://opensesame.atlassian.net"
+          confluence-space: "DevOps"
+          confluence-parent-pageid: 758382711
+          markdown-dir: './examples'
