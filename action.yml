@@ -23,9 +23,15 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - --confluenceUsername ${{ inputs.confluence-username }}
-    - --confluenceApiToken ${{ inputs.confluence-api-token }}
-    - --confluenceUrl ${{ inputs.confluence-url }}
-    - --confluenceSpace ${{ inputs.confluence-space }}
-    - --confluenceParentPageId ${{ inputs.confluence-parent-pageid }}
-    - --markdownDir ${{ inputs.markdown-dir }}
+    - --confluenceUsername
+    - ${{ inputs.confluence-username }}
+    - --confluenceApiToken
+    - ${{ inputs.confluence-api-token }}
+    - --confluenceUrl
+    - ${{ inputs.confluence-url }}
+    - --confluenceSpace
+    - ${{ inputs.confluence-space }}
+    - --confluenceParentPageId
+    - ${{ inputs.confluence-parent-pageid }}
+    - --markdownDir
+    - ${{ inputs.markdown-dir }}
