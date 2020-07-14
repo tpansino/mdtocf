@@ -132,17 +132,16 @@ class ConfluencePublisher():
         self.kv.save(filepath, {'id': id, 'title': filename, 'sha256': None})
         return id
 
-    def __publishRecursive(self, space, parentId, path):
+    def __publishRecursive(self, space, parentId, path, root=False):
         # File: _index.md
         indexParentId = parentId
         indexPath = path + os.sep + '_index.md'
-        if os.path.isfile(indexPath):
-            # Use local _index.md file
-            indexParentId = self.__updatePage(space, parentId, indexPath)
-        else:
-            # Autoindex simulate _index.md in Confluence if missing locally
-            # Except for (root) parentPageId because missing in markdownDir!
-            if parentId != self.parentPageId:
+        if not root:
+            if os.path.isfile(indexPath):
+                # Use local _index.md file
+                indexParentId = self.__updatePage(space, parentId, indexPath)
+            else:
+                # Autoindex simulate _index.md in Confluence if missing locally
                 indexParentId = self.__updatePage(
                     space, parentId, indexPath, True)
 
@@ -197,4 +196,4 @@ class ConfluencePublisher():
 
     def publish(self):
         self.__publishRecursive(
-            self.space, self.parentPageId, self.markdownDir)
+            self.space, self.parentPageId, self.markdownDir, root=True)
