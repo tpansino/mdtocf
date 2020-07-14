@@ -66,7 +66,7 @@ class HugoRefLinkPlugin():
                     title = get_front_matter_title(index_md)
                 else:
                     # auto index
-                    title = 'Folder {}'.format(os.path.basename(destination))
+                    title = os.path.basename(destination).title()
             else:
                 # link to *.md
                 title = get_front_matter_title(destination)

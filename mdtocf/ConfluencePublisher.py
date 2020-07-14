@@ -71,8 +71,8 @@ class ConfluencePublisher():
 
         if autoindex:
             body = self.confluenceRenderer.generate_autoindex()
-            state['front_matter']['title'] = 'Folder ' + \
-                os.path.basename(os.path.dirname(filepath))
+            state['front_matter']['title'] = \
+                os.path.basename(os.path.dirname(filepath)).title()
         else:
             body = self.renderer.read(filepath, state)
 
