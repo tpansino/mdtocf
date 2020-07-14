@@ -17,5 +17,6 @@ RUN set -ex \
 
 COPY . /mdtocf
 
+ENV PYTHONPATH "/mdtocf"
 ENTRYPOINT [ "/mdtocf/venv/bin/python" , "-m", "mdtocf.mdtocf" ]
 CMD [ "-c" ]
