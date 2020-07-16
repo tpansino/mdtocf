@@ -9,6 +9,15 @@ jobs:
     name: Upload Example Data to Confluence
     steps:
       - uses: actions/checkout@v2
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: benwart/mdtocf
+          tags: latest
+          tag_with_ref: true
+          tag_with_sha: true
       - uses: ./ # uses the action in the root directory
         name: Markdown to Confluence
         id: mdtocf
