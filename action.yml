@@ -21,7 +21,7 @@ inputs:
     default: './markdown'
 runs:
   using: 'docker'
-  image: 'docker://benwart/mdtocf:2.3.0'
+  image: 'docker://benwart/mdtocf:2.4.0'
   args:
     - --confluenceUsername
     - ${{ inputs.confluence-username }}
