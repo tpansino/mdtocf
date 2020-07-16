@@ -4,9 +4,9 @@ on:
       - master
 
 jobs:
-  exmaple_push:
+  build_push_test:
     runs-on: ubuntu-18.04
-    name: Upload Example Data to Confluence
+    name: Build and Push Action Docker
     steps:
       - uses: actions/checkout@v2
       - name: Build and Push Docker Image
@@ -19,7 +19,7 @@ jobs:
           tag_with_ref: true
           tag_with_sha: true
       - uses: ./ # uses the action in the root directory
-        name: Markdown to Confluence
+        name: Test Markdown to Confluence
         id: mdtocf
         with:
           confluence-username: ${{ secrets.CONFLUENCE_USERNAME }}
