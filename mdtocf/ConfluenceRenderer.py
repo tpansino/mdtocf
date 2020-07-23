@@ -95,6 +95,7 @@ class ConfluenceRenderer(mistune.HTMLRenderer):
             "error": "warning",
             "hint": "tip",
             "important": "info",
+            "info": "info",
             "note": "note",
             "tip": "tip",
             "warning": "warning",
