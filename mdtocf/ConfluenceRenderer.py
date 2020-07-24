@@ -7,16 +7,16 @@ mistune v2 and convert it to Confluence XHTML Storage Format.
 
 import base64
 import json
-import mistune
 import re
 
+from mistune import HTMLRenderer
 from urllib.parse import urlparse
 
 REF_REGEX = re.compile(
     r"{{<\s*?(?:rel)?(?:ref)?\s+\"(?P<ref>.*)\"\s*?>}}", re.IGNORECASE)
 
 
-class ConfluenceRenderer(mistune.HTMLRenderer):
+class ConfluenceRenderer(HTMLRenderer):
     def image(self, src, alt="", title=None):
         is_external = bool(urlparse(src).netloc)
         if is_external:

@@ -7,7 +7,8 @@ import hashlib
 import mistune
 import os
 
-from mistune.directives import Admonition, DirectiveInclude
+from mistune.directives import DirectiveInclude
+from .AdmonitionsDirective import Admonition
 from .HugoRefLinkPlugin import HugoRefLinkPlugin
 from .FrontMatterPlugin import plugin_front_matter
 from .ConfluenceRenderer import ConfluenceRenderer
