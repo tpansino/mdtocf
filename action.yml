@@ -1,27 +1,27 @@
-name: 'Markdown to Confluence'
-description: 'Pushes directory of markdown files to Confluence with support for mermaidjs and Confluence links.'
+name: "Markdown to Confluence"
+description: "Pushes directory of markdown files to Confluence with support for mermaidjs and Confluence links."
 inputs:
   confluence-username:
-    description: 'confluence api username'
+    description: "confluence api username"
     required: true
   confluence-api-token:
-    description: 'confluence api token'
+    description: "confluence api token"
     required: true
   confluence-url:
-    description: 'confluence organization url'
+    description: "confluence organization url"
     required: true
   confluence-space:
-    description: 'confluence space push content'
+    description: "confluence space push content"
     required: true
   confluence-parent-pageid:
-    description: 'confluence page id to push content under'
+    description: "confluence page id to push content under"
     required: true
   markdown-dir:
-    description: 'mount point to use ar root of content to push'
-    default: './markdown'
+    description: "mount point to use ar root of content to push"
+    default: "./markdown"
 runs:
-  using: 'docker'
-  image: 'docker://benwart/mdtocf:2.4.0'
+  using: "docker"
+  image: "Dockerfile"
   args:
     - --confluenceUsername
     - ${{ inputs.confluence-username }}

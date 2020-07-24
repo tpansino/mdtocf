@@ -27,7 +27,7 @@ jobs:
           tags: ${{ steps.extract.outputs.ref }}
           tag_with_sha: true
 
-      - uses: docker://benwart/mdtocf:${{ steps.extract.outputs.sha }}
+      - uses: ./
         name: Test Markdown to Confluence
         id: mdtocf
         with:
