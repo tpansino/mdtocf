@@ -1,4 +1,4 @@
-on: 
+on:
   push:
     branches:
       - master
@@ -13,7 +13,7 @@ jobs:
         shell: bash
         run: |
           echo "##[set-output name=ref;]$(echo ${GITHUB_REF##*/})"
-          echo "##[set-output name=sha;]$(echo ${GITHUB_SHA})"        
+          echo "##[set-output name=sha;]$(echo ${GITHUB_SHA})"
 
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -24,8 +24,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: benwart/mdtocf
-          tags: 
-            - ${{ steps.extract.outputs.ref }}
+          tags: ${{ steps.extract.outputs.ref }}
           tag_with_sha: true
 
       - uses: docker://benwart/mdtocf:${{ steps.extract.outputs.sha }}
@@ -37,4 +36,4 @@ jobs:
           confluence-url: "https://opensesame.atlassian.net"
           confluence-space: "DevOps"
           confluence-parent-pageid: 758382711
-          markdown-dir: './examples'
+          markdown-dir: "./examples"
