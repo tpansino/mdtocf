@@ -11,8 +11,8 @@ import pickledb
 
 class KeyValue():
 
-    def __init__(self, dbPath):
-        self.db = pickledb.load(dbPath, False)
+    def __init__(self, db_path):
+        self.db = pickledb.load(db_path, False)
 
     def keys(self):
         return [*self.db.getall()]

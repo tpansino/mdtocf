@@ -31,9 +31,9 @@ jobs:
         name: Test Markdown to Confluence
         id: mdtocf
         with:
-          confluence-username: ${{ secrets.CONFLUENCE_USERNAME }}
-          confluence-api-token: ${{ secrets.CONFLUENCE_API_TOKEN }}
-          confluence-url: "https://opensesame.atlassian.net"
-          confluence-space: "DevOps"
-          confluence-parent-pageid: 758382711
-          markdown-dir: "./examples"
+          confluence_username: ${{ secrets.CONFLUENCE_USERNAME }}
+          confluence_api_token: ${{ secrets.CONFLUENCE_API_TOKEN }}
+          confluence_url: "https://opensesame.atlassian.net"
+          confluence_space: "DevOps"
+          confluence_parent_pageid: 758382711
+          markdown_dir: "./examples"

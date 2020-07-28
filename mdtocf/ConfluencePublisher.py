@@ -24,32 +24,32 @@ def sha256(value):
     return h.hexdigest()
 
 
-def getFileSha256(filepath):
+def get_file_sha256(filepath):
     return sha256(getFileContent(filepath))
 
 
 class ConfluencePublisher():
 
     def __init__(
-            self, url, username, apiToken,
-            pageTitlePrefix, markdownDir, dbPath, space, parentPageId,
-            forceUpdate=False, forceDelete=False, skipUpdate=False):
-        self.api = Confluence(url=url, username=username, password=apiToken)
-        self.pageTitlePrefix = pageTitlePrefix
-        self.markdownDir = markdownDir
-        self.kv = KeyValue(dbPath)
+            self, url, username, api_token,
+            page_title_prefix, markdown_dir, db_path, space, parent_pageid,
+            force_update=False, force_delete=False, skip_update=False):
+        self.api = Confluence(url=url, username=username, password=api_token)
+        self.page_title_prefix = page_title_prefix
+        self.markdown_dir = markdown_dir
+        self.kv = KeyValue(db_path)
         self.space = space
-        self.parentPageId = parentPageId
-        self.forceUpdate = forceUpdate
-        self.forceDelete = forceDelete
-        self.skipUpdate = skipUpdate
-        self.confluenceRenderer = ConfluenceRenderer()
+        self.parent_pageid = parent_pageid
+        self.force_update = force_update
+        self.force_delete = force_delete
+        self.skip_update = skip_update
+        self.confluence_renderer = ConfluenceRenderer()
         self.renderer = mistune.create_markdown(
-            renderer=self.confluenceRenderer,
+            renderer=self.confluence_renderer,
             plugins=[
                 plugin_front_matter,
                 DirectiveInclude(),
-                HugoRefLinkPlugin(markdownDir),
+                HugoRefLinkPlugin(self.markdown_dir),
                 'strikethrough',
                 'footnotes',
                 'table',
@@ -58,58 +58,58 @@ class ConfluencePublisher():
             ]
         )
 
-    def __updatePage(self, space, parentId, filepath, autoindex=False):
+    def __update_page(self, space, parentid, filepath, autoindex=False):
 
         metadata = self.kv.load(filepath)
 
-        currentTitle = metadata['title']
-        currentHash = metadata['sha256']
-        hash = getFileSha256(filepath)
+        current_title = metadata['title']
+        current_hash = metadata['sha256']
+        sha_hash = get_file_sha256(filepath)
 
         # --- Render (BEGIN)
 
         state = {'front_matter': {}}
 
         if autoindex:
-            body = self.confluenceRenderer.generate_autoindex()
+            body = self.confluence_renderer.generate_autoindex()
             state['front_matter']['title'] = \
                 os.path.basename(os.path.dirname(filepath)).title()
         else:
             body = self.renderer.read(filepath, state)
 
-        title = '{}{}'.format(self.pageTitlePrefix,
+        title = '{}{}'.format(self.page_title_prefix,
                               state['front_matter']['title'])
 
         # --- Render (END)
 
-        if currentTitle and currentTitle != title:
+        if current_title and current_title != title:
             print('REN => Title: ' + title)
-            pageId = self.api.get_page_id(space, currentTitle)
-            self.api.update_page(pageId, title, body)
+            confluence_page_id = self.api.get_page_id(space, current_title)
+            self.api.update_page(confluence_page_id, title, body)
 
-        if currentHash != hash or self.forceUpdate:
+        if current_hash != sha_hash or self.force_update:
             if autoindex:
                 print('IDX => Title: ' + title)
             else:
                 print('UPD => Title: ' + title)
 
             if self.api.update_or_create(
-                parent_id=parentId,
+                parent_id=parentid,
                 title=title,
                 body=body,
                 representation='storage'
             ):
-                id = self.api.get_page_id(space, title)
+                confluence_page_id = self.api.get_page_id(space, title)
                 self.kv.save(filepath,
-                             {'id': id, 'title': title, 'sha256': hash})
-                return id
-            else:
-                return None
+                             {'id': confluence_page_id, 'title': title, 'sha256': sha_hash})
+                return confluence_page_id
+
+            return None
         else:
             print('SKP => Title: ' + title)
             return self.api.get_page_id(space, title)
 
-    def __deleteAttachment(self, filepath):
+    def __delete_attachment(self, filepath):
         metadata = self.kv.load(filepath)
         filename = os.path.basename(filepath)
         if metadata['id']:
@@ -121,52 +121,54 @@ class ConfluencePublisher():
             except (HTTPError, ApiError):
                 pass
 
-    def __updateAttachment(self, space, pageId, filepath):
+    def __update_attachment(self, space, pageid, filepath):
         filename = os.path.basename(filepath)
 
         print('UPD Att. => Title: ' + filename)
         results = self.api.attach_file(filepath,
                                        name=filename,
-                                       page_id=pageId,
+                                       page_id=pageid,
                                        space=space)
-        id = results['id'] if 'id' in results else results['results'][0]['id']
-        self.kv.save(filepath, {'id': id, 'title': filename, 'sha256': None})
-        return id
+        confluence_page_id = results['id'] if 'id' in results else results['results'][0]['id']
+        self.kv.save(filepath, {'id': confluence_page_id,
+                                'title': filename, 'sha256': None})
+        return confluence_page_id
 
-    def __publishRecursive(self, space, parentId, path, root=False):
+    def __publish_recursive(self, space, parentid, path, root=False):
         # File: _index.md
-        indexParentId = parentId
-        indexPath = path + os.sep + '_index.md'
+        index_parentid = parentid
+        index_path = path + os.sep + '_index.md'
         if not root:
-            if os.path.isfile(indexPath):
+            if os.path.isfile(index_path):
                 # Use local _index.md file
-                indexParentId = self.__updatePage(space, parentId, indexPath)
+                index_parentid = self.__update_page(
+                    space, parentid, index_path)
             else:
                 # Autoindex simulate _index.md in Confluence if missing locally
-                indexParentId = self.__updatePage(
-                    space, parentId, indexPath, True)
+                index_parentid = self.__update_page(
+                    space, parentid, index_path, True)
 
         # Directories: */
         for f in os.scandir(path):
             if f.is_dir():
-                self.__publishRecursive(space, indexParentId, f.path)
+                self.__publish_recursive(space, index_parentid, f.path)
 
         # Files: *.* (Except _index.md)
         for f in os.scandir(path):
             if f.is_file():
                 if f.path.endswith(".md"):
                     if not f.path.endswith(os.sep + '_index.md'):
-                        self.__updatePage(space, indexParentId, f.path)
+                        self.__update_page(space, index_parentid, f.path)
                 else:
-                    self.__deleteAttachment(f.path)
-                    self.__updateAttachment(space, indexParentId, f.path)
+                    self.__delete_attachment(f.path)
+                    self.__update_attachment(space, index_parentid, f.path)
 
     def delete(self):
         for filepath in sorted(self.kv.keys()):
             metadata = self.kv.load(filepath)
 
             # Page has Sub-pages (Childs)?
-            indexWithChilds = False
+            index_with_childs = False
             if filepath.endswith('_index.md'):
                 childs = 0
                 if os.path.isdir(os.path.dirname(filepath)):
@@ -174,10 +176,10 @@ class ConfluencePublisher():
                         if f.path.endswith(".md") and \
                            not f.path.endswith('_index.md'):
                             childs = childs + 1
-                indexWithChilds = childs > 0
+                index_with_childs = childs > 0
 
-            if self.forceDelete \
-               or (not os.path.isfile(filepath) and not indexWithChilds):
+            if self.force_delete \
+               or (not os.path.isfile(filepath) and not index_with_childs):
                 print('DEL => Id: '
                       + metadata['id'] + ', Title: ' + metadata['title'])
                 if filepath.endswith(".md"):
@@ -191,10 +193,10 @@ class ConfluencePublisher():
                         else:
                             pass
                 else:
-                    self.__deleteAttachment(filepath)
+                    self.__delete_attachment(filepath)
 
                 self.kv.remove(filepath)
 
     def publish(self):
-        self.__publishRecursive(
-            self.space, self.parentPageId, self.markdownDir, root=True)
+        self.__publish_recursive(
+            self.space, self.parent_pageid, self.markdown_dir, root=True)
