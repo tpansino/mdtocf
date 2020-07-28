@@ -147,17 +147,18 @@ Autoconverted link https://github.com/nodeca/pica (enable linkify to see)
 ## Admonitions
 
 .. tip::Title Text
-
    Don't forget to use really cool tips in your *markdown*!
 
 .. info::Information
-
    Cool markdown is good for everyone!
 
 .. warning::
-
    This is a **warning!**
 
+
+## HTML Comments Should Not Render
+
+<!-- Should Not Be Rendered -->
 
 ## Images
 

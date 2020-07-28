@@ -9,9 +9,10 @@ import os
 
 from mistune.directives import DirectiveInclude
 from .AdmonitionsDirective import Admonition
+from .HTMLCommentPlugin import plugin_html_comment
 from .HugoRefLinkPlugin import HugoRefLinkPlugin
 from .FrontMatterPlugin import plugin_front_matter
-from .ConfluenceRenderer import ConfluenceRenderer
+from .ConfluenceRenderer import ConfluenceRenderer, generate_autoindex
 from .KeyValue import KeyValue
 from atlassian import Confluence
 from atlassian.confluence import ApiError
@@ -33,7 +34,9 @@ class ConfluencePublisher():
     def __init__(
             self, url, username, api_token,
             page_title_prefix, markdown_dir, db_path, space, parent_pageid,
-            force_update=False, force_delete=False, skip_update=False):
+            force_update=False, force_delete=False, skip_update=False,
+            verbose=False):
+
         self.api = Confluence(url=url, username=username, password=api_token)
         self.page_title_prefix = page_title_prefix
         self.markdown_dir = markdown_dir
@@ -43,7 +46,7 @@ class ConfluencePublisher():
         self.force_update = force_update
         self.force_delete = force_delete
         self.skip_update = skip_update
-        self.confluence_renderer = ConfluenceRenderer()
+        self.confluence_renderer = ConfluenceRenderer(verbose)
         self.renderer = mistune.create_markdown(
             renderer=self.confluence_renderer,
             plugins=[
@@ -55,6 +58,7 @@ class ConfluencePublisher():
                 'table',
                 'url',
                 Admonition(),
+                plugin_html_comment,
             ]
         )
 
@@ -71,7 +75,7 @@ class ConfluencePublisher():
         state = {'front_matter': {}}
 
         if autoindex:
-            body = self.confluence_renderer.generate_autoindex()
+            body = generate_autoindex()
             state['front_matter']['title'] = \
                 os.path.basename(os.path.dirname(filepath)).title()
         else:

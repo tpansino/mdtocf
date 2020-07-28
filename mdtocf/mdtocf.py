@@ -75,7 +75,8 @@ def main():
                         **environ_or_required('MARKDOWN_DIR'))
     parser.add_argument('--confluence-page-title-prefix',
                         help='e.g. "[MyPrefix] "',
-                        **environ_string('CONFLUENCE_PAGE_TITLE_PREFIX', default=''))
+                        **environ_string('CONFLUENCE_PAGE_TITLE_PREFIX',
+                                         default=''))
     parser.add_argument('--db-path',
                         help='e.g. "./dbs/mydocs.db"',
                         **environ_string('DB_PATH', default='./meta.db'))
@@ -94,12 +95,12 @@ def main():
                         help='default=False. Skip page update' +
                         ' in Confluence',
                         **environ_bool('SKIP_UPDATE', default=False))
+    parser.add_argument('--verbose',
+                        action="store_true",
+                        help='default=False. Show additional output',
+                        **environ_bool('VERBOSE', default=False))
 
     args = parser.parse_args()
-
-    force_update = int(args.force_update) == 1
-    force_delete = int(args.force_delete) == 1
-    skip_update = int(args.skip_update) == 1
 
     confluence_publisher = ConfluencePublisher(
         url=args.confluence_url,
@@ -110,13 +111,14 @@ def main():
         db_path=args.db_path,
         space=args.confluence_space,
         parent_pageid=args.confluence_parent_pageid,
-        force_update=force_update,
-        force_delete=force_delete,
-        skip_update=skip_update
+        force_update=args.force_update,
+        force_delete=args.force_delete,
+        skip_update=args.skip_update,
+        verbose=args.verbose
     )
 
     confluence_publisher.delete()
-    if not skip_update:
+    if not args.skip_update:
         confluence_publisher.publish()
 
 
