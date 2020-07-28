@@ -13,3 +13,4 @@ dist
 *.egg-info
 # vscode launch config
 launch.json
+.env
