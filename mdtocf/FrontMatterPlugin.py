@@ -53,8 +53,7 @@ def parse_front_matter(md, s, state):
         state['front_matter'] = front_matter
 
         # strip front matter from 's'
-        markdown = s[m.end()+1:]
-
+        markdown = s[m.end():]
         return markdown, state
     else:
         raise FrontMatterMissingError()

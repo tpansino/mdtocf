@@ -14,7 +14,13 @@ from urllib.parse import urlparse
 
 
 def generate_autoindex():
-    return '<ac:structured-macro ac:name="children" />'
+    return """
+    <ac:structured-macro ac:name="children">
+        <ac:parameter ac:name="sort">title</ac:parameter>
+        <ac:parameter ac:name="depth">2</ac:parameter>
+        <ac:parameter ac:name="all">true</ac:parameter>
+    </ac:structured-macro>
+    """
 
 
 class ConfluenceRenderer(HTMLRenderer):
