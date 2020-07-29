@@ -45,17 +45,17 @@ class ConfluenceRenderer(HTMLRenderer):
             "warning": "warning",
         }
 
-        return \
-            '<ac:structured-macro ac:name="' + supported_names[name] + '">' \
-            + '<ac:parameter ac:name="icon">true</ac:parameter>' \
-            + '<ac:parameter ac:name="title">' \
-            + (title.strip() if title
-                else name.title()) \
-            + '</ac:parameter>' \
-            + '<ac:rich-text-body>' \
-            + '<p>' + text.strip() + '</p>' \
-            + '</ac:rich-text-body>' \
-            + '</ac:structured-macro>'
+        return f"""
+        <ac:structured-macro ac:name="{supported_names[name]}">
+            <ac:parameter ac:name="icon">true</ac:parameter>
+            <ac:parameter ac:name="title">
+            {(title.strip() if title else name.title())}
+            </ac:parameter>
+            <ac:rich-text-body>
+            <p>{text.strip()}</p>
+            </ac:rich-text-body>
+        </ac:structured-macro>
+        """
 
     def block_code(self, code, info=None):
         if self.verbose:

@@ -72,6 +72,7 @@ class ConfluencePublisher():
 
         # --- Render (BEGIN)
 
+        body = ''
         state = {'front_matter': {}}
 
         if autoindex:
@@ -79,7 +80,9 @@ class ConfluencePublisher():
             state['front_matter']['title'] = \
                 os.path.basename(os.path.dirname(filepath)).title()
         else:
-            body = self.renderer.read(filepath, state)
+            if filepath.endswith("_index.md"):
+                body = generate_autoindex()
+            body += self.renderer.read(filepath, state)
 
         title = '{}{}'.format(self.page_title_prefix,
                               state['front_matter']['title'])
