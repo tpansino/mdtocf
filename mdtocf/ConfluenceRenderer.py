@@ -100,7 +100,7 @@ class ConfluenceRenderer(HTMLRenderer):
 
     def block_html_comment(self):
         if self.verbose:
-            print(f"block html comment")
+            print("block html comment")
         return render_block_html_comment()
 
     def block_quote(self, text):
@@ -131,15 +131,16 @@ class ConfluenceRenderer(HTMLRenderer):
     def hugo_ref_link(self, title, text=None):
         if self.verbose:
             print("hugo ref link")
-        return \
-            '<ac:link>' \
-            + '<ri:page ri:content-title="{}" />'.format(title) \
-            + '<ac:plain-text-link-body>' \
-            + '<![CDATA[' \
-            + '{}'.format(text if text is not None else title) \
-            + ']]>' \
-            + '</ac:plain-text-link-body>' \
-            + '</ac:link>'
+        return f"""
+        <ac:link>
+            <ri:page ri:content-title="{title}" />
+            <ac:plain-text-link-body>
+                <![CDATA[
+                {text if text is not None else title}
+                ]]>
+            </ac:plain-text-link-body>
+        </ac:link>
+        """
 
     def image(self, src, alt="", title=None):
         if self.verbose:
