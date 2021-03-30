@@ -4,7 +4,7 @@
 
 atlassian-python-api==1.16.0
 
-Pygments==2.6.1
+Pygments==2.7.4
 mistune==2.0.0a4
 urllib3==1.25.9
 pyyaml==5.3.1
